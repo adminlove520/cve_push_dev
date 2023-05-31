@@ -1,0 +1,45 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: CVE-Monitor
+
+on:
+  release:
+    types: [published]
+  push:
+    tags:
+    - 'v*'
+  #currently the workflow is set to run every 10 minutes  
+  schedule:
+    - cron: '0/10 * * * *'
+  watch:
+    types: [started]
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        pip install requests
+        pip install PyNaCl
+        pip install lxml
+        pip install python-telegram-bot
+    
+    - name: Monitor CVE
+      env: 
+         SCKEY: ${{ secrets.SCKEY }}
+         TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+         TG_TOKEN: ${{ secrets.TG_TOKEN }}
+         total_count: ${{ secrets.TOTAL_COUNT }}
+         option: ${{ secrets.Option }}
+         GH_TOKEN: ${{ secrets.GH_TOKEN }} 
+         GH_REPO: ${{ github.repository }}
+      run: |
+        python Github-CVE-Listener.py
