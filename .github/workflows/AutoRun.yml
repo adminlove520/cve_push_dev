@@ -34,7 +34,7 @@ jobs:
     
     - name: Monitor CVE
       env: 
-         SCKEY: ${{ secrets.SCKEY }}
+         dingtalk_webhook: ${{secrets.DINGTALK_WEBHOOK}}
          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
          TG_TOKEN: ${{ secrets.TG_TOKEN }}
          total_count: ${{ secrets.TOTAL_COUNT }}
